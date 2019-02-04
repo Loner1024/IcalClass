@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="ui center aligned icon header"><i class="code icon"></i> <div class="content"> 只需一步<div class="sub header">现在就使用ICal格式来获取你的课表</div></div> </h2>
+<br>
+<div class="ui centered grid">
+        <form action="" method="POST" >
+                <br>
+                {{ form.hidden_tag() }}
+                <p><div class="ui labeled input">
+                    <div class="ui label">{{ form.student_id.label }}</div>
+                    {{ form.student_id(size=32,placeholder="在此输入你的学号") }}
+                </div>
+                    {% for error in form.student_id.errors %}
+                    <span style="color:red">[{ error }]</span>
+                    {% endfor %}
+                </p>
+                <br>
+                <p>{{ form.submit(class="ui primary button") }}</p>
+                
+            </form>
+</div>
+{% endblock %}
