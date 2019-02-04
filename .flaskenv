@@ -1,0 +1,2 @@
+FLASK_APP=IcalClass.py
+FLASK_DEBUG=1
