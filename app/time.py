@@ -25,6 +25,7 @@ while start_time != end_time:
             time_list[6].append(start_time.strftime('%Y%m%d'))
         start_time = start_time + timedelta(days=1)
 
-print(time_list[6])
+time_data = {'class_name': '新制度经济学', 'class_week': '星期六', 'class_time': '5-6', 'class_place': '会3-101'}
+print(time_data[''])
 
 
