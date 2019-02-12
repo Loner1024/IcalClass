@@ -7,3 +7,11 @@ from app.forms import get_ical
 def index():
     form = get_ical()
     return render_template('index.html',title='ICalClass',form=form)
+
+@app.route('/help')
+def help_page():
+    return render_template('help.html')
+
+@app.route('/about')
+def about_page():
+    return render_template('about.html')
