@@ -10,10 +10,10 @@
     <div class="three wide column"></div>
     <div class="ten wide column">
     <!--下面是导航栏-->
-    <div class="ui menu">
-            <a class="item">首页 </a>
-            <a class="item">帮助 </a>
-            <a class="item">关于 </a>
+    <div class="ui pointing menu">
+            <a href="{{ url_for('index') }}" {% if active == "index" %} class="active item" {% else %} class="item" {% endif %}>首页 </a>
+            <a href="{{ url_for('help_page') }}" {% if active == "help" %} class="active item" {% else %} class="item" {% endif %}>帮助 </a>
+            <a href="{{ url_for('about_page') }}" {% if active == "about" %} class="active item" {% else %} class="item" {% endif %} >关于 </a>
           </div>
      <!--顶部导航完-->
     {% block content %}{% endblock %}
