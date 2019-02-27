@@ -1,5 +1,8 @@
 from requests_html import HTML, HTMLSession
 from datetime import datetime, timedelta
+import uuid
+import tempfile, os
+from icalendar import Calendar, Event, vText
 
 
 class GetIcal(object):
@@ -12,6 +15,7 @@ class GetIcal(object):
         class_data_week = []
         class_data_time = []
         class_data_place = []
+        class_data_lesson = []
         session = HTMLSession()
         session.get('https://www.shzurk.com/ThinkYibanclass/index.php/Main/index?username=loner&studentid=%s' % self.student_id)
         r = session.get('https://www.shzurk.com/ThinkYibanclass/index.php/Main/myClass')
@@ -19,6 +23,7 @@ class GetIcal(object):
         class_data_week = r.html.find('.skzs')
         class_data_time = r.html.find('.xq')
         class_data_place = r.html.find('.dd')
+        class_data_lesson = r.html.find('.jc')
 
         def deal_data(class_info):
             for i in range(len(class_info)):
@@ -28,9 +33,10 @@ class GetIcal(object):
         deal_data(class_data_week)
         deal_data(class_data_time)
         deal_data(class_data_place)
+        deal_data(class_data_lesson)
 
         for i in range(len(class_data_name)):
-            class_list = [class_data_name[i],class_data_week[i],class_data_time[i],class_data_place[i]]
+            class_list = [class_data_name[i], class_data_week[i], class_data_time[i], class_data_place[i],class_data_lesson[i]]
             class_data.append(class_list)
         return class_data
 
@@ -75,20 +81,73 @@ class MergeData(object):
                 i[2] = 5
             elif i[2] == '星期天':
                 i[2] = 6
+            
+            if i[4] == '1-2':
+                i[4] = [100000, 114000]
+            elif i[4] == '3-4':
+                i[4] = [121000, 135000]
+            elif i[4] == '5-6':
+                i[4] = [160000, 174000]
+            elif i[4] == '7-8':
+                i[4] = [180000, 194000]
+            elif i[4] == '9-10':
+                i[4] = [203000, 221000]
 
-            if len(i[1]) <= 2:
-                i[1] = [int(i[1])]
-            if len(i[1]) = 3:
-                i[1] = []
-                                
+            week = i[1]
+            week = week.split(',')
+            week_1 = []
+            week_2 = []
+            for k in week:
+                k = k.split('-')
+                for n in range(len(k)):
+                    k[n] = int(k[n])
+                week_1.append(k)
+            for k in week_1:
+                for z in range(k[0],k[-1]+1):
+                    week_2.append(z)
+            i[1] = week_2
 
-        print(self.class_data)
+            for k in range(len(i[1])):
+                i[1][k] = self.all_week_list[i[1][k]][2]
+        return(self.class_data)
 
 
-if __name__ == "__main__":
+class OutIcal(object):
+    def __init__(self, class_data, student_id):
+        self.class_data = class_data
+        self.student_id = student_id
+
+    def out_ical(self):
+        cal = Calendar()
+        cal.add('prodid', '-//My calendar product//mxm.dk//')
+        cal.add('version', '2.0')
+        for ical_data in self.class_data:
+            for i in range(len(ical_data[1])):
+                event = Event()
+                event.add('summary', ical_data[0])
+                event.add('dtstart', datetime.strptime(ical_data[1][i]+str(ical_data[4][0]),'%Y%m%d%H%M%S'))
+                event.add('dtend', datetime.strptime(ical_data[1][i]+str(ical_data[4][1]),'%Y%m%d%H%M%S'))
+                event.add('dtstamp', datetime.strptime(ical_data[1][i]+str(ical_data[4][0]),'%Y%m%d%H%M%S'))
+                event['location'] = vText(ical_data[3])
+                event['uid'] = uuid.uuid1()
+                cal.add_component(event)
+                # directory = tempfile.mkdtemp()
+        cwd = os.getcwd()
+        os.chdir(cwd + '/app/static/ical_file/')
+        f = open(os.path.join(self.student_id + '.ics'), 'wb')
+        f.write(cal.to_ical())
+        f.close()
+            
+
+
+'''
+if __name__ == '__main__':
     x = TimeList(20190304, 20190901)
-    # x.time_list()
+    # x.time_list() 
     y = GetIcal('20171016087')
     # y.get_class()
-    z = MergeData(y.get_class(),x.time_list())
-    z.merge_data()
+    z = MergeData(y.get_class(), x.time_list())
+    # z.merge_data()
+    k = OutIcal(z.merge_data(), '20171016087')
+    k.out_ical()
+'''
