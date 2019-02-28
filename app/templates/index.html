@@ -19,17 +19,6 @@
                 <br>
     <p>{{ form.submit(class="ui primary button") }}</p>  
             </form>
-            <!--隔开-->
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        </ul>
 </div>
 {% endblock %}
 <script>
