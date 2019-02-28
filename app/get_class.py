@@ -83,15 +83,21 @@ class MergeData(object):
                 i[2] = 6
             
             if i[4] == '1-2':
-                i[4] = [100000, 114000]
+                i[4] = [1000, 1140]
             elif i[4] == '3-4':
-                i[4] = [121000, 135000]
+                i[4] = [1210, 1350]
             elif i[4] == '5-6':
-                i[4] = [160000, 174000]
+                i[4] = [1600, 1740]
             elif i[4] == '7-8':
-                i[4] = [180000, 194000]
+                i[4] = [1800, 1940]
             elif i[4] == '9-10':
-                i[4] = [203000, 221000]
+                i[4] = [2030, 2210]
+            elif i[4] == '1-4':
+                i[4] = [1000, 1350]
+            elif i[4] == '5-8':
+                i[4] = [1600, 1940]
+            elif i[4] == '7-10':
+                i[4] = [1800, 2210]
 
             week = i[1]
             week = week.split(',')
@@ -109,8 +115,8 @@ class MergeData(object):
 
             for k in range(len(i[1])):
                 i[1][k] = self.all_week_list[i[1][k]][2]
+                # print(i[1])
         return(self.class_data)
-
 
 class OutIcal(object):
     def __init__(self, class_data, student_id):
@@ -121,13 +127,15 @@ class OutIcal(object):
         cal = Calendar()
         cal.add('prodid', '-//My calendar product//mxm.dk//')
         cal.add('version', '2.0')
+        n = 0
         for ical_data in self.class_data:
             for i in range(len(ical_data[1])):
                 event = Event()
                 event.add('summary', ical_data[0])
-                event.add('dtstart', datetime.strptime(ical_data[1][i]+str(ical_data[4][0]),'%Y%m%d%H%M%S'))
-                event.add('dtend', datetime.strptime(ical_data[1][i]+str(ical_data[4][1]),'%Y%m%d%H%M%S'))
-                event.add('dtstamp', datetime.strptime(ical_data[1][i]+str(ical_data[4][0]),'%Y%m%d%H%M%S'))
+                print(str(ical_data[4][0]))
+                event.add('dtstart', datetime.strptime(ical_data[1][i] + str(ical_data[4][0]), '%Y%m%d%H%M'))
+                event.add('dtend', datetime.strptime(ical_data[1][i]+str(ical_data[4][1]),'%Y%m%d%H%M'))
+                event.add('dtstamp', datetime.strptime(ical_data[1][i]+str(ical_data[4][0]),'%Y%m%d%H%M'))
                 event['location'] = vText(ical_data[3])
                 event['uid'] = uuid.uuid1()
                 cal.add_component(event)
@@ -139,15 +147,15 @@ class OutIcal(object):
         f.close()
             
 
-
 '''
 if __name__ == '__main__':
-    x = TimeList(20190304, 20190901)
-    # x.time_list() 
-    y = GetIcal('20171016087')
-    # y.get_class()
+    x = TimeList(20190303, 20190901)
+    #print(x.time_list()) 
+    y = GetIcal('20181014023')
+    #y = GetIcal('20171016087')
+    #print(y.get_class())
     z = MergeData(y.get_class(), x.time_list())
-    # z.merge_data()
-    k = OutIcal(z.merge_data(), '20171016087')
+    #print(z.merge_data()[7])
+    k = OutIcal(z.merge_data(), '20181014023')
     k.out_ical()
 '''
