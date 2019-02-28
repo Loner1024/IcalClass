@@ -98,6 +98,8 @@ class MergeData(object):
                 i[4] = [1600, 1940]
             elif i[4] == '7-10':
                 i[4] = [1800, 2210]
+            elif i[4] == '1-3':
+                i[4] = [1000, 1255]
 
             week = i[1]
             week = week.split(',')
