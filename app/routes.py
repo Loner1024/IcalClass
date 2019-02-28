@@ -18,15 +18,15 @@ def index():
 
         return redirect('static/ical_file/' + form.student_id.data+'.ics')
         # return redirect(url_for('index'))
-    return render_template('index.html',title='ICalClass',form=form)
+    return render_template('index.html', title='ICalClass', form=form)
 
 @app.route('/help')
 def help_page():
-    return render_template('help.html')
+    return render_template('help.html', title='帮助 - Help')
 
 @app.route('/about')
 def about_page():
-    return render_template('about.html')
+    return render_template('about.html', title='关于 - About')
 
 # 20171016087
 '''
